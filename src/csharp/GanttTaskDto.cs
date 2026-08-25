@@ -34,6 +34,5 @@ namespace GanttChart
         public string Nome { get; set; }
         public string Cpf { get; set; }
         public bool Responsavel { get; set; }
-        public string Foto { get; set; }
     }
 }

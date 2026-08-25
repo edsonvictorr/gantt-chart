@@ -1155,16 +1155,9 @@
                             avatar.style.zIndex = String(maxAvatares - idx);
                             avatar.title = (pessoa.Nome || "") + (pessoa.Responsavel ? " (Responsável)" : " (Integrante)");
 
-                            if (pessoa.Foto) {
-                                var img = document.createElement("img");
-                                img.src = pessoa.Foto;
-                                img.alt = pessoa.Nome || "";
-                                avatar.appendChild(img);
-                            } else {
-                                var iniciais = document.createElement("span");
-                                iniciais.textContent = obterIniciais(pessoa.Nome);
-                                avatar.appendChild(iniciais);
-                            }
+                            var iniciais = document.createElement("span");
+                            iniciais.textContent = obterIniciais(pessoa.Nome);
+                            avatar.appendChild(iniciais);
 
                             var badge = document.createElement("span");
                             badge.className = "g-people-badge";
@@ -1252,9 +1245,7 @@
         }
 
         function buildPessoaChipHtml(pessoa) {
-            var avatarHtml = pessoa.Foto
-                ? '<img src="' + pessoa.Foto + '" alt="' + escapeHtml(pessoa.Nome || "") + '" />'
-                : '<span class="g-people-chip-iniciais">' + escapeHtml(obterIniciais(pessoa.Nome)) + '</span>';
+            var avatarHtml = '<span class="g-people-chip-iniciais">' + escapeHtml(obterIniciais(pessoa.Nome)) + '</span>';
 
             return '<span class="g-people-chip g-people-chip-avatar' + (pessoa.Responsavel ? ' g-people-responsavel' : '') + '">'
                 + '<span class="g-people-chip-foto">' + avatarHtml + '</span>'
@@ -1264,9 +1255,6 @@
 
         function buildAvatarMiniHtml(pessoa) {
             var titulo = escapeHtml(pessoa.Nome || "");
-            if (pessoa.Foto) {
-                return '<span class="g-mini-avatar" title="' + titulo + '"><img src="' + pessoa.Foto + '" alt="' + titulo + '" /></span>';
-            }
             return '<span class="g-mini-avatar" title="' + titulo + '"><span class="g-mini-avatar-iniciais">' + escapeHtml(obterIniciais(pessoa.Nome)) + '</span></span>';
         }
 
