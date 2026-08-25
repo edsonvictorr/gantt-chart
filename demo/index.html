@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gantt Chart - Demo</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="../src/css/gantt-chart.css" />
+    <link rel="stylesheet" href="css/demo.css" />
+</head>
+<body>
+    <div class="demo-page">
+        <header class="demo-header">
+            <h1>Gantt Chart</h1>
+            <p>Um gráfico de Gantt para acompanhamento e gerenciamento visual de projetos.</p>
+            <div class="demo-info">
+                <h2>O que está sendo demonstrado</h2>
+                <ul>
+                    <li>Estrutura hierárquica de tarefas (Projeto &gt; Atividades &gt; Tarefas).</li>
+                    <li>Zoom, expansão/recolhimento, escala do gráfico e timeline simulada.</li>
+                    <li>Tooltip com progresso, responsáveis, integrantes e evidências.</li>
+                    <li>Dados locais mockados para execução sem backend.</li>
+                </ul>
+            </div>
+        </header>
+
+        <main class="demo-gantt-wrapper">
+            <div id="grafico" class="active">
+                <div class="gantt-page">
+                    <input type="hidden" id="ganttRefreshUrl" value="" />
+
+                    <div class="gantt-header">
+                        <h3>Projeto de Desenvolvimento de Sistema</h3>
+                        <p>Gráfico de Gantt hierárquico</p>
+                    </div>
+
+                    <div class="gantt-glossario" aria-label="Glossário de símbolos do gráfico Gantt">
+                        <span class="g-glossario-item"><span class="g-glossario-swatch g-glossario-em-andamento"></span> Em andamento</span>
+                        <span class="g-glossario-item"><span class="g-glossario-swatch g-glossario-concluido"></span> Concluído</span>
+                        <span class="g-glossario-item"><span class="g-glossario-swatch g-glossario-cancelado"></span> Cancelado</span>
+                        <span class="g-glossario-item"><span class="g-glossario-swatch g-glossario-nao-iniciado"></span> Não iniciado</span>
+                        <span class="g-glossario-item"><span class="g-glossario-icon g-glossario-atrasado">🚩</span> Atrasado</span>
+                        <span class="g-glossario-item"><span class="g-glossario-icon g-glossario-vencimento">⚠</span> Vencimento próximo</span>
+                        <span class="g-glossario-item"><span class="g-glossario-avatar">R</span> Responsável</span>
+                        <span class="g-glossario-item"><span class="g-glossario-avatar g-glossario-avatar-int">I</span> Integrante</span>
+                    </div>
+
+                    <div class="gantt-view-toggle" id="ganttViewToggle">
+                        <button type="button" class="btn btn-default btn-sm is-active" data-view-mode="gantt">Gantt</button>
+                        <button type="button" class="btn btn-default btn-sm" data-view-mode="timeline"><i class="fa fa-play"></i> Timeline</button>
+                    </div>
+
+                    <div class="gantt-toolbar" id="ganttToolbar">
+                        <button type="button" class="btn btn-default btn-sm" data-action="expand-all"><i class="fa fa-angle-double-down"></i> Expandir</button>
+                        <button type="button" class="btn btn-default btn-sm" data-action="collapse-all"><i class="fa fa-angle-double-up"></i> Recolher</button>
+                        <div class="gantt-sep"></div>
+                        <button type="button" class="btn btn-default btn-sm" data-action="zoom-in"><i class="fa fa-search-plus"></i></button>
+                        <button type="button" class="btn btn-default btn-sm" data-action="zoom-out"><i class="fa fa-search-minus"></i></button>
+                        <span class="gantt-zoom-label" id="ganttZoomLabel">Dia</span>
+                        <button type="button" class="btn btn-default btn-sm" data-action="zoom-reset"><i class="fa fa-compress"></i> Ajustar</button>
+                        <div class="gantt-sep"></div>
+                        <span class="gantt-scale-label">Escala:</span>
+                        <div class="gantt-scale-controls" id="ganttScaleControls">
+                            <button type="button" class="btn btn-default btn-xs" data-chart-scale="70">70%</button>
+                            <button type="button" class="btn btn-default btn-xs" data-chart-scale="80">80%</button>
+                            <button type="button" class="btn btn-default btn-xs" data-chart-scale="90">90%</button>
+                            <button type="button" class="btn btn-default btn-xs is-active" data-chart-scale="100">100%</button>
+                        </div>
+                    </div>
+
+                    <div class="gantt-timeline-panel" id="ganttTimelinePanel" style="display:none;">
+                        <div class="gantt-timeline-panel-title">Timeline</div>
+                        <div class="gantt-timeline-controls">
+                            <button type="button" class="btn btn-default btn-sm" data-timeline-action="play"><i class="fa fa-play"></i> Iniciar</button>
+                            <button type="button" class="btn btn-default btn-sm" data-timeline-action="pause"><i class="fa fa-pause"></i> Pausar</button>
+                            <button type="button" class="btn btn-default btn-sm" data-timeline-action="restart"><i class="fa fa-step-backward"></i> Reiniciar</button>
+                            <button type="button" class="btn btn-default btn-sm" data-timeline-action="finish"><i class="fa fa-step-forward"></i> Finalizar</button>
+                            <div class="gantt-sep"></div>
+                            <span class="gantt-timeline-speed-label">Velocidade:</span>
+                            <div class="gantt-timeline-speeds" id="ganttTimelineSpeeds">
+                                <button type="button" class="btn btn-default btn-xs is-active" data-speed="1">1x</button>
+                                <button type="button" class="btn btn-default btn-xs" data-speed="5">5x</button>
+                                <button type="button" class="btn btn-default btn-xs" data-speed="10">10x</button>
+                                <button type="button" class="btn btn-default btn-xs" data-speed="20">20x</button>
+                                <button type="button" class="btn btn-default btn-xs" data-speed="50">50x</button>
+                                <button type="button" class="btn btn-default btn-xs" data-speed="100">100x</button>
+                            </div>
+                        </div>
+                        <div class="gantt-timeline-summary">
+                            <div class="gantt-timeline-summary-row"><span>Data simulada:</span> <b id="ganttTimelineDate">-</b></div>
+                            <div class="gantt-timeline-summary-row"><span>Andamento do projeto:</span> <b id="ganttTimelineProgress">0%</b></div>
+                            <div class="gantt-timeline-progressbar"><span id="ganttTimelineProgressBar" style="width:0%;"></span></div>
+                            <div class="gantt-timeline-summary-row gantt-timeline-counts">
+                                <span>Concluídas: <b id="ganttTimelineDone">0</b></span>
+                                <span>Em andamento: <b id="ganttTimelineRunning">0</b></span>
+                                <span>Futuras: <b id="ganttTimelineFuture">0</b></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="gantt-chart-container">
+                        <div id="chartDivGantt"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+    <script src="data/demo-data.js"></script>
+    <script src="../src/js/gantt-chart.js"></script>
+</body>
+</html>

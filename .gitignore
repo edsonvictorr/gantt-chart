@@ -1,0 +1,16 @@
+# Ambiente
+.vs/
+.vscode/
+.idea/
+
+# Build / pacotes
+bin/
+obj/
+node_modules/
+
+# Logs temporários
+*.log
+
+# SO
+.DS_Store
+Thumbs.db
