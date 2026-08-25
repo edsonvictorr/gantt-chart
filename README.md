@@ -65,7 +65,7 @@ Exemplo:
 Não há build obrigatório para a demo. Basta clonar o repositório e servir arquivos estáticos.
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/edsonvictorr/gantt-chart
 cd gantt-chart
 python -m http.server 8080
 ```
