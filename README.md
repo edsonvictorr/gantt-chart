@@ -47,6 +47,12 @@ A estrutura está preparada para publicar a pasta `demo/` no GitHub Pages.
 - Sincronização de scroll entre grade e timeline.
 - Atualização opcional via endpoint/SignalR (quando configurado em integração real).
 
+Exemplo:
+
+<img width="1770" height="913" alt="image" src="https://github.com/user-attachments/assets/bfc10c63-d1a2-4dc7-85cb-142c036590bc" />
+
+<img width="1865" height="893" alt="image" src="https://github.com/user-attachments/assets/ce3bf1f2-2afa-4045-a5e1-d585c049123a" />
+
 ## 5) Tecnologias
 
 - HTML
