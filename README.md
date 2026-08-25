@@ -4,7 +4,7 @@ Componente de **Gráfico de Gantt** para acompanhamento e gerenciamento visual d
 
 ## 1) O que é
 
-Este repositório contém uma extração independente do componente de Gantt usado em produção no SIGEP, com foco em visualização hierárquica de tarefas e simulação de timeline.
+Este repositório contém uma extração independente do componente de Gantt, com foco em visualização hierárquica de tarefas e simulação de timeline.
 
 ## 2) Por que foi criado
 
@@ -32,8 +32,6 @@ O componente foi criado para suprir a necessidade de um Gantt funcional e reutil
 A estrutura está preparada para publicar a pasta `demo/` no GitHub Pages.
 
 ## 4) Funcionalidades existentes
-
-Com base na implementação real extraída:
 
 - Renderização hierárquica de tarefas (árvore pai/filho).
 - Roll-up de datas dos níveis pai a partir dos descendentes.
@@ -122,16 +120,9 @@ Referência C# em: `src/csharp/GanttTaskDto.cs`.
 
 ## 10) Licença
 
-**Pendente de definição.**
+Este projeto está licenciado sob a licença **MIT**.
 
-Antes de publicar, escolha a licença do projeto e adicione o arquivo `LICENSE`.
-
-### Opções comuns
-
-- **MIT**: permissiva e simples, permite uso comercial e redistribuição com poucas restrições.
-- **Apache-2.0**: também permissiva, inclui cláusulas explícitas de patente e requisitos adicionais de aviso.
-
-Enquanto a licença não for definida, o ideal é não considerar o projeto oficialmente aberto para redistribuição.
+Consulte o arquivo [LICENSE](./LICENSE) para os detalhes completos.
 
 ---
 
