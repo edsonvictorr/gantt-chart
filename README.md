@@ -51,7 +51,7 @@ Exemplo:
 
 <img width="1770" height="913" alt="image" src="https://github.com/user-attachments/assets/bfc10c63-d1a2-4dc7-85cb-142c036590bc" />
 
-<img width="1865" height="893" alt="image" src="https://github.com/user-attachments/assets/ce3bf1f2-2afa-4045-a5e1-d585c049123a" />
+<img width="1587" height="934" alt="image" src="https://github.com/user-attachments/assets/a07f6749-2048-41e2-85e7-a3dc18d9d738" />
 
 ## 5) Tecnologias
 
@@ -65,7 +65,7 @@ Exemplo:
 Não há build obrigatório para a demo. Basta clonar o repositório e servir arquivos estáticos.
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/edsonvictorr/gantt-chart
 cd gantt-chart
 python -m http.server 8080
 ```
