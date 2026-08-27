@@ -1067,6 +1067,14 @@
     opacity: 0.9;
 }
 
+.g-bar-task.g-status-cancelado.g-cancelamento-parcial,
+.g-bar-project.g-status-cancelado.g-cancelamento-parcial,
+.g-bar-milestone.g-status-cancelado.g-cancelamento-parcial {
+    background: rgba(154, 165, 177, 0.24);
+    background-image: none;
+    border-color: #a94442;
+}
+
 .g-bar-task.g-status-nao_iniciado,
 .g-bar-project.g-status-nao_iniciado,
 .g-bar-milestone.g-status-nao_iniciado {
@@ -1106,6 +1114,19 @@
     align-items: center;
     justify-content: flex-end;
     overflow: hidden;
+    z-index: 2;
+}
+
+.g-bar-timeline-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.58);
+    border-left: 1px solid rgba(70, 92, 110, 0.28);
+    pointer-events: none;
+    z-index: 3;
+    transition: left 180ms linear;
 }
 
 @keyframes g-progress-stripes {
@@ -1124,7 +1145,14 @@
 }
 
 .g-bar-progress-cancelado {
-    background: rgba(0, 0, 0, 0.18);
+    background: #d9534f;
+    background-image: repeating-linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.35) 0,
+        rgba(255, 255, 255, 0.35) 6px,
+        transparent 6px,
+        transparent 12px
+    );
     animation: none;
 }
 

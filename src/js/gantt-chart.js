@@ -46,6 +46,7 @@
             isAutoScrolling: false,
             suspendAutoScrollUntil: 0,
             userScrollActiveUntil: 0,
+            suppressScrollMarkUntil: 0,
             isRestoringViewport: false,
             lastViewportRatio: null
         };
@@ -350,11 +351,11 @@
         }
 
         function getTaskReferenceStart(task) {
-            return task.ownStart || task.start;
+            return task.start;
         }
 
         function getTaskReferenceEnd(task) {
-            return task.ownEnd || task.end;
+            return task.end;
         }
 
         function isTaskStartedInTimeline(task) {
@@ -476,9 +477,7 @@
             baseVisual.timelineClass = "g-sim-andamento";
             baseVisual.countState = "andamento";
             baseVisual.simulatedProgress = progressoSimulado;
-            baseVisual.playbackProgress = task.statusInfo.key === "concluido"
-                ? Math.max(0, Math.min(100, task.progress))
-                : Math.min(Math.max(0, Math.min(100, task.progress)), progressoSimulado);
+            baseVisual.playbackProgress = Math.max(0, Math.min(100, task.progress));
             return baseVisual;
         }
 
@@ -1066,35 +1065,44 @@
                             rowsEl.appendChild(rowEl);
                             return;
                         }
-
-                        if (visual.countState === "andamento") {
-                            var diasAteDataSimulada = Math.max(diffDaysPrecise(task.start, timelineState.simulatedDate) + 1, 1);
-                            barWidth = Math.max((diasAteDataSimulada * dayWidth) - 2, minBarWidth);
-                        }
                     }
 
                     var isCancelado = visual.key === "cancelado";
+                    var progressLabelValue = Math.max(0, Math.min(100, isTimelineMode() ? visual.playbackProgress : visual.progress));
+                    var cancelamentoParcial = isCancelado && progressLabelValue > 0 && progressLabelValue < 100;
 
                     var bar = document.createElement("div");
                     var showVencimento = visual.proximoVencimento;
-                    bar.className = "g-bar " + (task.hasChildren ? "g-bar-project" : "g-bar-task") + " g-status-" + visual.combinedKey + (showVencimento ? " g-bar-vencimento-proximo" : "") + (visual.timelineClass ? " " + visual.timelineClass : "");
+                    bar.className = "g-bar " + (task.hasChildren ? "g-bar-project" : "g-bar-task") + " g-status-" + visual.combinedKey + (showVencimento ? " g-bar-vencimento-proximo" : "") + (visual.timelineClass ? " " + visual.timelineClass : "") + (cancelamentoParcial ? " g-cancelamento-parcial" : "");
                     bar.setAttribute("data-id", task.id);
                     bar.style.left = barLeft + "px";
                     bar.style.width = barWidth + "px";
 
-                    var progValue = Math.max(0, Math.min(100, isTimelineMode() ? visual.playbackProgress : visual.progress));
+                    var progValue = progressLabelValue;
+                    if (isCancelado && progValue === 0) {
+                        progValue = 100;
+                    }
+
                     var prog = document.createElement("div");
                     prog.className = "g-bar-progress" + (isCancelado ? " g-bar-progress-cancelado" : "");
                     prog.style.width = progValue + "%";
 
-                    if (progValue > 0 && barWidth >= 34 && (!isTimelineMode() || visual.countState !== "futura")) {
+                    if (progressLabelValue > 0 && barWidth >= 34 && (!isTimelineMode() || visual.countState !== "futura")) {
                         var progLabel = document.createElement("span");
                         progLabel.className = "g-bar-progress-label";
-                        progLabel.textContent = progValue + "%";
+                        progLabel.textContent = progressLabelValue + "%";
                         prog.appendChild(progLabel);
                     }
 
                     bar.appendChild(prog);
+
+                    if (isTimelineMode() && visual.countState === "andamento") {
+                        var revealPercent = Math.max(0, Math.min(100, visual.simulatedProgress));
+                        var timelineMask = document.createElement("div");
+                        timelineMask.className = "g-bar-timeline-mask";
+                        timelineMask.style.left = revealPercent + "%";
+                        bar.appendChild(timelineMask);
+                    }
 
                     if (isCancelado && barWidth >= 16) {
                         var cancelIcon = document.createElement("span");
@@ -1289,7 +1297,7 @@
                 + '<div class="g-tooltip-row"><span>Fim:</span><b>' + formatDateBr(task.end) + '</b></div>'
                 + '<div class="g-tooltip-row"><span>Progresso:</span><b>' + visual.progress + '%</b></div>';
 
-            if (!isTimelineMode() && task.statusInfo.key === "concluido" && task.dataEncerramento) {
+            if (task.statusInfo && task.statusInfo.combinedKey === "concluido_atrasado" && task.dataEncerramento) {
                 html += '<div class="g-tooltip-row"><span>Encerramento:</span><b>' + formatDateBr(task.dataEncerramento) + '</b></div>';
             }
 
@@ -1512,6 +1520,7 @@
 
             function markUserScrollInteraction() {
                 if (!isTimelineMode() || timelineState.isAutoScrolling || timelineState.isRestoringViewport) { return; }
+                if (Date.now() < timelineState.suppressScrollMarkUntil) { return; }
                 var now = Date.now();
                 timelineState.userScrollActiveUntil = now + 350;
                 timelineState.suspendAutoScrollUntil = now + 1400;
@@ -1552,6 +1561,7 @@
                 if (timelineState.isRestoringViewport) { return; }
                 if (isTimelineMode() && timelineState.isPlaying && !timelineState.isAutoScrolling) {
                     var now = Date.now();
+                    if (now < timelineState.suppressScrollMarkUntil) { return; }
                     timelineState.userScrollActiveUntil = now + 350;
                     timelineState.suspendAutoScrollUntil = now + 1400;
                 }
@@ -1568,6 +1578,7 @@
                 if (timelineState.isRestoringViewport) { return; }
                 if (isTimelineMode() && timelineState.isPlaying && !timelineState.isAutoScrolling) {
                     var now = Date.now();
+                    if (now < timelineState.suppressScrollMarkUntil) { return; }
                     timelineState.userScrollActiveUntil = now + 350;
                     timelineState.suspendAutoScrollUntil = now + 1400;
                 }
@@ -1622,6 +1633,7 @@
             var verticalRatio = Math.max(0, Math.min(1, viewport.verticalRatio || 0));
 
             timelineState.isRestoringViewport = true;
+            timelineState.suppressScrollMarkUntil = Date.now() + 160;
 
             try {
                 if (wrap) {
